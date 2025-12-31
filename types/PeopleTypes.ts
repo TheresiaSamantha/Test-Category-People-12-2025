@@ -12,27 +12,23 @@ export type People = {
 };
 
 export type info1 = {
-  _id?: ObjectId;
   umur: string;
   umurDanTenor: string;
   stsPerkawinan: string;
   pendidikan: string;
 };
 export type info2 = {
-  _id?: ObjectId;
   alamat: string;
   kepemilikanRumah: string;
   lamaTinggal: string;
 };
 export type info3 = {
-  _id?: ObjectId;
   kategoriPerusahaan: string;
   jabatan: string;
   lamaBekerja: string;
   pendapatanTHPP: string;
 };
 export type info4 = {
-  _id?: ObjectId;
   rekeningBank: string;
   avgSaldoBulan: string;
   trackingPembayaran: string;
@@ -41,13 +37,11 @@ export type info4 = {
 };
 
 export type info5 = {
-  _id?: ObjectId;
   tenor: string;
   debServiceRatio: string;
 };
 
 export type info6 = {
-  _id?: ObjectId;
   hasilAppraisal: string;
   luasBangunan: string;
   tujuanPembiayaan: string;

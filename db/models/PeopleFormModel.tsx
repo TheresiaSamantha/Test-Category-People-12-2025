@@ -18,10 +18,6 @@ class PeopleFormModel {
     return await collection.findOne({ idPeople: idPeople });
   }
   static async create(formPeopleData: FormPeople) {
-    console.log(
-      "🚀 ~ PeopleFormModel ~ create ~ formPeopleData:",
-      formPeopleData
-    );
     peopleFormSchema.parse(formPeopleData);
     const collection = this.getCollection();
     const result = await collection.insertOne(formPeopleData);

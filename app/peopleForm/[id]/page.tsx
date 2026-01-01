@@ -6,6 +6,8 @@ import { useRouter, useParams } from "next/navigation";
 import Swal from "sweetalert2";
 import type {
   FormPeople,
+  akumulasiScoreType,
+  OptionItemType,
   info1Type,
   info2Type,
   info3Type,
@@ -21,7 +23,6 @@ export default function PeopleFormPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [infoList, setInfoList] = useState<FormOptionDocument[]>([]);
-  const [scoreMap, setScoreMap] = useState<Record<string, number>>({});
 
   // Initial state following FormPeople structure
   const [formData, setFormData] = useState<FormPeople>({
@@ -36,14 +37,48 @@ export default function PeopleFormPage() {
     info6: {} as info6Type,
   });
 
+  const [akumulasi, setAkumulasi] = useState<akumulasiScoreType>();
+
   // Fetch options from infoList API
   useEffect(() => {
     const fetchOptions = async () => {
       try {
         const response = await fetch("/api/infoList");
         if (response.ok) {
-          const data = await response.json();
+          const data: FormOptionDocument[] = await response.json();
           setInfoList(data);
+
+          // Build akumulasi structure from data
+          const akumulasiData: Record<
+            string,
+            {
+              bobotInfo: number;
+              optionScore: Record<
+                string,
+                { bobotOption: number; selectionScore: number }
+              >;
+            }
+          > = {};
+
+          data.forEach((doc) => {
+            const infoName = doc.name; // e.g., "info1", "info2", etc.
+
+            akumulasiData[infoName] = {
+              bobotInfo: doc.bobotInfo,
+              optionScore: {},
+            };
+
+            // Process each field in the document
+            Object.keys(doc.fields).forEach((fieldKey) => {
+              const field = doc.fields[fieldKey];
+              akumulasiData[infoName].optionScore[fieldKey] = {
+                bobotOption: field.bobotOptions,
+                selectionScore: 0, // Initial value, will be updated on selection
+              };
+            });
+          });
+
+          setAkumulasi(akumulasiData as akumulasiScoreType);
         }
       } catch (error) {
         console.error(
@@ -54,6 +89,7 @@ export default function PeopleFormPage() {
     };
     fetchOptions();
   }, []);
+  console.log("🚀 ~ PeopleFormPage ~ akumulasi:", akumulasi);
 
   const handleInfoChange = (
     section: keyof FormPeople,
@@ -61,32 +97,79 @@ export default function PeopleFormPage() {
     value: string,
     score: number = 0
   ) => {
-    console.log("🚀 ~ handleInfoChange ~ section:", section);
-    const fieldKey = `${section}.${field}`;
+    // Update akumulasi and calculate total from it
+    if (akumulasi) {
+      const sectionData = akumulasi[section as keyof typeof akumulasi];
+      // console.log("🚀 ~ handleInfoChange ~ sectionData:", sectionData);
 
-    // Calculate new scoreMap
-    const newScoreMap = { ...scoreMap, [fieldKey]: score };
+      if (sectionData && typeof sectionData === "object") {
+        // Get current option data with proper typing
+        const currentOptionData = sectionData.optionScore[field] as
+          | OptionItemType
+          | undefined;
 
-    // Penjumlahan total score berserta bobot info dan option
-    const newTotalScore = Object.values(newScoreMap).reduce(
-      (acc, curr) => acc + curr,
-      0
-    );
+        if (!currentOptionData) return;
 
-    // Update both states
-    setScoreMap(newScoreMap);
+        // Create new akumulasi with updated selectionScore
+        const updatedAkumulasi = {
+          ...akumulasi,
+          [section]: {
+            ...sectionData,
+            optionScore: {
+              ...sectionData.optionScore,
+              [field]: {
+                bobotOption: currentOptionData.bobotOption,
+                selectionScore: score,
+              },
+            },
+          },
+        };
 
-    setFormData((prevData) => {
-      const sectionData = prevData[section] as Record<string, string | number>;
-      return {
-        ...prevData,
-        totalScore: newTotalScore,
-        [section]: {
-          ...sectionData,
-          [field]: value,
-        },
-      };
-    });
+        // Calculate total score from all selectionScore in akumulasi
+        let newTotalScore = 0;
+        Object.keys(updatedAkumulasi).forEach((infoKey) => {
+          const infoData =
+            updatedAkumulasi[infoKey as keyof typeof updatedAkumulasi];
+          if (
+            infoData &&
+            typeof infoData === "object" &&
+            "optionScore" in infoData
+          ) {
+            let totalInfo = 0;
+            Object.values(infoData.optionScore).forEach((optionData) => {
+              if (
+                typeof optionData === "object" &&
+                "selectionScore" in optionData
+              ) {
+                const calculatedAkumulasi =
+                  (optionData.bobotOption / 100) * optionData.selectionScore;
+                totalInfo += calculatedAkumulasi;
+              }
+            });
+            newTotalScore += totalInfo * (infoData.bobotInfo / 100);
+          }
+        });
+
+        // Update akumulasi state
+        setAkumulasi(updatedAkumulasi as akumulasiScoreType);
+
+        // Update formData with new total
+        setFormData((prevData) => {
+          const sectionData = prevData[section] as Record<
+            string,
+            string | number
+          >;
+          return {
+            ...prevData,
+            totalScore: newTotalScore,
+            [section]: {
+              ...sectionData,
+              [field]: value,
+            },
+          };
+        });
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -288,43 +371,44 @@ export default function PeopleFormPage() {
             </div>
           </section>
 
-          {/* Section 5 & 6: Loan & Appraisal */}
-          <div className="grid md:grid-cols-2 gap-12">
-            <section className="space-y-6">
-              <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                INFO 05. PINJAMAN
-              </div>
-              <div className="grid gap-4">
-                {renderSelect("info5", "tenor", "Tenor", "tenor")}
-                {renderSelect(
-                  "info5",
-                  "debServiceRatio",
-                  "DSR Ratio",
-                  "debServiceRatio"
-                )}
-              </div>
-            </section>
+          {/* Section 5 */}
+          <section className="space-y-6">
+            <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              INFO 05. PINJAMAN
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+              {renderSelect("info5", "tenor", "Tenor", "tenor")}
+              {renderSelect(
+                "info5",
+                "debServiceRatio",
+                "DSR Ratio",
+                "debServiceRatio"
+              )}
+            </div>
+          </section>
 
-            <section className="space-y-6">
-              <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                INFO 06. JAMINAN
-              </div>
-              <div className="grid gap-4">
-                {renderSelect(
-                  "info6",
-                  "hasilAppraisal",
-                  "Appraisal",
-                  "hasilAppraisal"
-                )}
-                {renderSelect(
-                  "info6",
-                  "luasBangunan",
-                  "Luas M2",
-                  "luasBangunan"
-                )}
-              </div>
-            </section>
-          </div>
+          {/* Section 6 */}
+          <section className="space-y-6">
+            <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              INFO 06. JAMINAN
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {renderSelect(
+                "info6",
+                "hasilAppraisal",
+                "Appraisal",
+                "hasilAppraisal"
+              )}
+              {renderSelect("info6", "luasBangunan", "Luas M2", "luasBangunan")}
+              {renderSelect(
+                "info6",
+                "tujuanPembiayaan",
+                "Tujuan Pembiayaan",
+                "tujuanPembiayaan"
+              )}
+              {renderSelect("info6", "ltv", "LTV", "ltv")}
+            </div>
+          </section>
 
           {/* Hasil */}
           <section className="space-y-6">

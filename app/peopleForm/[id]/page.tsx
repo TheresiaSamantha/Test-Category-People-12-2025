@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 import type {
   FormPeople,
   akumulasiScoreType,
-  OptionItemType,
   info1Type,
   info2Type,
   info3Type,
@@ -104,9 +103,12 @@ export default function PeopleFormPage() {
 
       if (sectionData && typeof sectionData === "object") {
         // Get current option data with proper typing
-        const currentOptionData = sectionData.optionScore[field] as
-          | OptionItemType
-          | undefined;
+        const currentOptionData = (
+          sectionData.optionScore as Record<
+            string,
+            { bobotOption: number; selectionScore: number }
+          >
+        )[field];
 
         if (!currentOptionData) return;
 
@@ -241,7 +243,8 @@ export default function PeopleFormPage() {
           <option value="">Pilih {label}</option>
           {options.map((opt: OptionItem, idx: number) => (
             <option key={idx} value={opt.value}>
-              {opt.label} (Score: {opt.score})
+              {opt.label}
+              {/*  (Score: {opt.score}) */}
             </option>
           ))}
         </select>
@@ -269,18 +272,18 @@ export default function PeopleFormPage() {
             <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               INFO 01. PERSONAL & STATUS
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {renderSelect("info1", "umur", "Kategori Umur", "umur")}
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+              {renderSelect("info1", "umur", "Umur Pemohon", "umur")}
               {renderSelect(
                 "info1",
                 "umurDanTenor",
-                "Umur & Tenor",
+                "Umur Pemohon & Tenor",
                 "umurDanTenor"
               )}
               {renderSelect(
                 "info1",
                 "stsPerkawinan",
-                "Status Nikah",
+                "Status Perkawinan",
                 "stsPerkawinan"
               )}
               {renderSelect("info1", "pendidikan", "Pendidikan", "pendidikan")}
@@ -292,18 +295,23 @@ export default function PeopleFormPage() {
             <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               INFO 02. TEMPAT TINGGAL
             </div>
-            <div className="grid md:grid-cols-3 gap-6">
-              {renderSelect("info2", "alamat", "Wilayah Alamat", "alamat")}
+            <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-6">
+              {renderSelect(
+                "info2",
+                "alamat",
+                "Alamat Tempat Tinggal",
+                "alamat"
+              )}
               {renderSelect(
                 "info2",
                 "kepemilikanRumah",
-                "Status Rumah",
+                "Kepemilikan Tempat Tinggal",
                 "kepemilikanRumah"
               )}
               {renderSelect(
                 "info2",
                 "lamaTinggal",
-                "Lama Tinggal",
+                "Lama Menempati",
                 "lamaTinggal"
               )}
             </div>
@@ -314,24 +322,24 @@ export default function PeopleFormPage() {
             <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               INFO 03. PEKERJAAN & PENDAPATAN
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
               {renderSelect(
                 "info3",
                 "kategoriPerusahaan",
-                "Tipe Company",
+                "Kategori Perusahaan",
                 "kategoriPerusahaan"
               )}
-              {renderSelect("info3", "jabatan", "Level Jabatan", "jabatan")}
+              {renderSelect("info3", "jabatan", "Jabatan", "jabatan")}
               {renderSelect(
                 "info3",
                 "lamaBekerja",
-                "Masa Kerja",
+                "Lama Berkerja",
                 "lamaBekerja"
               )}
               {renderSelect(
                 "info3",
                 "pendapatanTHPP",
-                "Income/THP",
+                "Pendapatan THP",
                 "pendapatanTHPP"
               )}
             </div>
@@ -342,30 +350,35 @@ export default function PeopleFormPage() {
             <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               INFO 04. KEUANGAN & SLIK
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-4">
               {renderSelect(
                 "info4",
                 "rekeningBank",
-                "Bank Account",
+                "Rekening Bank",
                 "rekeningBank"
               )}
               {renderSelect(
                 "info4",
                 "avgSaldoBulan",
-                "Avg Saldo",
+                "Rata - Rata Saldo Bulanan",
                 "avgSaldoBulan"
               )}
               {renderSelect(
                 "info4",
                 "trackingPembayaran",
-                "Payment Track",
+                "Track Record pembayaran ansuran",
                 "trackingPembayaran"
               )}
-              {renderSelect("info4", "tracjSLIK", "SLIK Status", "tracjSLIK")}
+              {renderSelect(
+                "info4",
+                "tracjSLIK",
+                "Track Data SLIK",
+                "tracjSLIK"
+              )}
               {renderSelect(
                 "info4",
                 "typeKartuKredit",
-                "CC Type",
+                "Kepemilikan Kartu Kredit",
                 "typeKartuKredit"
               )}
             </div>
@@ -381,7 +394,7 @@ export default function PeopleFormPage() {
               {renderSelect(
                 "info5",
                 "debServiceRatio",
-                "DSR Ratio",
+                "Debt Service Ratio",
                 "debServiceRatio"
               )}
             </div>
@@ -392,18 +405,23 @@ export default function PeopleFormPage() {
             <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               INFO 06. JAMINAN
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
               {renderSelect(
                 "info6",
                 "hasilAppraisal",
-                "Appraisal",
+                "Hasil Appraisal",
                 "hasilAppraisal"
               )}
-              {renderSelect("info6", "luasBangunan", "Luas M2", "luasBangunan")}
+              {renderSelect(
+                "info6",
+                "luasBangunan",
+                "Luas Bangunan (m2)",
+                "luasBangunan"
+              )}
               {renderSelect(
                 "info6",
                 "tujuanPembiayaan",
-                "Tujuan Pembiayaan",
+                "Tujuan dari Pembiayaan",
                 "tujuanPembiayaan"
               )}
               {renderSelect("info6", "ltv", "LTV", "ltv")}

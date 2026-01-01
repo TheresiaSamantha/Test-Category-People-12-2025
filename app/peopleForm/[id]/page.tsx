@@ -155,9 +155,6 @@ export default function PeopleFormPage() {
               Formulir Penilaian Detail (ID: {id})
             </p>
           </div>
-          <div className="bg-yellow-400 border-4 border-foreground p-4 font-black text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            SCORE: {formData.totalScore}
-          </div>
         </header>
 
         <form onSubmit={handleSubmit} className="space-y-12">
@@ -305,6 +302,21 @@ export default function PeopleFormPage() {
               </div>
             </section>
           </div>
+
+          {/* Hasil */}
+          <section className="space-y-6">
+            <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              Hasil:
+            </div>
+            <div className="grid md:grid-cols-2 gap-12">
+              <div className="bg-yellow-400 border-4 border-foreground p-4 font-black text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                SCORE: {formData.totalScore}
+              </div>
+              <div className=" border-4 border-foreground p-4 font-black text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                Kategori: -
+              </div>
+            </div>
+          </section>
 
           <button
             type="submit"

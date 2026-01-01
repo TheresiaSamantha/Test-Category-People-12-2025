@@ -188,6 +188,10 @@ export default function PeopleFormPage() {
     setLoading(true);
 
     try {
+      const checkExisting = await fetch(`/api/people/${id}`);
+      if (checkExisting) {
+        throw new Error("Form scoring untuk orang ini sudah ada.");
+      }
       if (
         !formData.info1.umur ||
         !formData.info1.umurDanTenor ||

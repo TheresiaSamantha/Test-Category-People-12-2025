@@ -21,6 +21,7 @@ export default function PeopleFormPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [infoList, setInfoList] = useState<FormOptionDocument[]>([]);
+  const [scoreMap, setScoreMap] = useState<Record<string, number>>({});
 
   // Initial state following FormPeople structure
   const [formData, setFormData] = useState<FormPeople>({
@@ -57,12 +58,28 @@ export default function PeopleFormPage() {
   const handleInfoChange = (
     section: keyof FormPeople,
     field: string,
-    value: string
+    value: string,
+    score: number = 0
   ) => {
-    setFormData((prev) => {
-      const sectionData = prev[section] as Record<string, string | number>;
+    const fieldKey = `${section}.${field}`;
+
+    // Calculate new scoreMap
+    const newScoreMap = { ...scoreMap, [fieldKey]: score };
+
+    // Calculate new total score
+    const newTotalScore = Object.values(newScoreMap).reduce(
+      (sum, s) => sum + s,
+      0
+    );
+
+    // Update both states
+    setScoreMap(newScoreMap);
+
+    setFormData((prevData) => {
+      const sectionData = prevData[section] as Record<string, string | number>;
       return {
-        ...prev,
+        ...prevData,
+        totalScore: newTotalScore,
         [section]: {
           ...sectionData,
           [field]: value,
@@ -121,7 +138,6 @@ export default function PeopleFormPage() {
     }
 
     const sectionData = formData[section] as Record<string, string | number>;
-
     return (
       <div className="flex flex-col gap-2">
         <label className="font-black uppercase text-xs tracking-widest">
@@ -129,13 +145,19 @@ export default function PeopleFormPage() {
         </label>
         <select
           value={sectionData[field]}
-          onChange={(e) => handleInfoChange(section, field, e.target.value)}
+          onChange={(e) => {
+            const selectedOption = options.find(
+              (opt) => opt.value === e.target.value
+            );
+            const score = selectedOption?.score || 0;
+            return handleInfoChange(section, field, e.target.value, score);
+          }}
           className="border-4 border-foreground p-4 bg-background focus:bg-primary/5 focus:outline-none font-bold cursor-pointer appearance-none"
         >
           <option value="">Pilih {label}</option>
           {options.map((opt: OptionItem, idx: number) => (
             <option key={idx} value={opt.value}>
-              {opt.label}
+              {opt.label} (Score: {opt.score})
             </option>
           ))}
         </select>
@@ -313,7 +335,7 @@ export default function PeopleFormPage() {
                 SCORE: {formData.totalScore}
               </div>
               <div className=" border-4 border-foreground p-4 font-black text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                Kategori: -
+                Kategori: {formData.categoryPeople || "-"}
               </div>
             </div>
           </section>

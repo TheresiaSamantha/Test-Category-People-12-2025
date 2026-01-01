@@ -114,7 +114,6 @@ export default function PeopleFormPage() {
     let options: OptionItem[] = [];
 
     for (const doc of infoList) {
-      console.log("🚀 ~ renderSelect ~ doc:", doc);
       if (doc.fields.hasOwnProperty(fieldKey)) {
         options = doc.fields[fieldKey];
         break;
@@ -173,13 +172,13 @@ export default function PeopleFormPage() {
                 "info1",
                 "umurDanTenor",
                 "Umur & Tenor",
-                "umur_tenor"
+                "umurDanTenor"
               )}
               {renderSelect(
                 "info1",
                 "stsPerkawinan",
                 "Status Nikah",
-                "perkawinan"
+                "stsPerkawinan"
               )}
               {renderSelect("info1", "pendidikan", "Pendidikan", "pendidikan")}
             </div>
@@ -191,18 +190,18 @@ export default function PeopleFormPage() {
               INFO 02. TEMPAT TINGGAL
             </div>
             <div className="grid md:grid-cols-3 gap-6">
-              {renderSelect("info2", "alamat", "Wilayah Alamat", "wilayah")}
+              {renderSelect("info2", "alamat", "Wilayah Alamat", "alamat")}
               {renderSelect(
                 "info2",
                 "kepemilikanRumah",
                 "Status Rumah",
-                "rumah"
+                "kepemilikanRumah"
               )}
               {renderSelect(
                 "info2",
                 "lamaTinggal",
                 "Lama Tinggal",
-                "lama_tinggal"
+                "lamaTinggal"
               )}
             </div>
           </section>
@@ -217,15 +216,20 @@ export default function PeopleFormPage() {
                 "info3",
                 "kategoriPerusahaan",
                 "Tipe Company",
-                "perusahaan"
+                "kategoriPerusahaan"
               )}
               {renderSelect("info3", "jabatan", "Level Jabatan", "jabatan")}
-              {renderSelect("info3", "lamaBekerja", "Masa Kerja", "masa_kerja")}
+              {renderSelect(
+                "info3",
+                "lamaBekerja",
+                "Masa Kerja",
+                "lamaBekerja"
+              )}
               {renderSelect(
                 "info3",
                 "pendapatanTHPP",
                 "Income/THP",
-                "pendapatan"
+                "pendapatanTHPP"
               )}
             </div>
           </section>
@@ -236,20 +240,30 @@ export default function PeopleFormPage() {
               INFO 04. KEUANGAN & SLIK
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
-              {renderSelect("info4", "rekeningBank", "Bank Account", "bank")}
-              {renderSelect("info4", "avgSaldoBulan", "Avg Saldo", "saldo")}
+              {renderSelect(
+                "info4",
+                "rekeningBank",
+                "Bank Account",
+                "rekeningBank"
+              )}
+              {renderSelect(
+                "info4",
+                "avgSaldoBulan",
+                "Avg Saldo",
+                "avgSaldoBulan"
+              )}
               {renderSelect(
                 "info4",
                 "trackingPembayaran",
                 "Payment Track",
-                "payment"
+                "trackingPembayaran"
               )}
-              {renderSelect("info4", "tracjSLIK", "SLIK Status", "slik")}
+              {renderSelect("info4", "tracjSLIK", "SLIK Status", "tracjSLIK")}
               {renderSelect(
                 "info4",
                 "typeKartuKredit",
                 "CC Type",
-                "kartu_kredit"
+                "typeKartuKredit"
               )}
             </div>
           </section>
@@ -262,7 +276,12 @@ export default function PeopleFormPage() {
               </div>
               <div className="grid gap-4">
                 {renderSelect("info5", "tenor", "Tenor", "tenor")}
-                {renderSelect("info5", "debServiceRatio", "DSR Ratio", "dsr")}
+                {renderSelect(
+                  "info5",
+                  "debServiceRatio",
+                  "DSR Ratio",
+                  "debServiceRatio"
+                )}
               </div>
             </section>
 
@@ -275,13 +294,13 @@ export default function PeopleFormPage() {
                   "info6",
                   "hasilAppraisal",
                   "Appraisal",
-                  "appraisal"
+                  "hasilAppraisal"
                 )}
                 {renderSelect(
                   "info6",
                   "luasBangunan",
                   "Luas M2",
-                  "luas_bangunan"
+                  "luasBangunan"
                 )}
               </div>
             </section>

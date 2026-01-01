@@ -61,14 +61,15 @@ export default function PeopleFormPage() {
     value: string,
     score: number = 0
   ) => {
+    console.log("🚀 ~ handleInfoChange ~ section:", section);
     const fieldKey = `${section}.${field}`;
 
     // Calculate new scoreMap
     const newScoreMap = { ...scoreMap, [fieldKey]: score };
 
-    // Calculate new total score
+    // Penjumlahan total score berserta bobot info dan option
     const newTotalScore = Object.values(newScoreMap).reduce(
-      (sum, s) => sum + s,
+      (acc, curr) => acc + curr,
       0
     );
 
@@ -132,7 +133,7 @@ export default function PeopleFormPage() {
 
     for (const doc of infoList) {
       if (doc.fields.hasOwnProperty(fieldKey)) {
-        options = doc.fields[fieldKey];
+        options = doc.fields[fieldKey].options;
         break;
       }
     }

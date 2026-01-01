@@ -25,7 +25,7 @@ export default function PeopleFormPage() {
 
   // Initial state following FormPeople structure
   const [formData, setFormData] = useState<FormPeople>({
-    idPeople: (id as string) || "",
+    idPeople: id as string,
     totalScore: 0,
     categoryPeople: "",
     info1: {} as info1Type,

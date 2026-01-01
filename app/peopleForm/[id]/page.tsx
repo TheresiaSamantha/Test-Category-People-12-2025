@@ -151,6 +151,14 @@ export default function PeopleFormPage() {
             newTotalScore += totalInfo * (infoData.bobotInfo / 100);
           }
         });
+        let newCategory = "";
+        if (newTotalScore > 70 && newTotalScore <= 100) {
+          newCategory = "LOW RISK";
+        } else if (newTotalScore > 55 && newTotalScore <= 70) {
+          newCategory = "MEDIUM RISK";
+        } else if (newTotalScore <= 55) {
+          newCategory = "HIGH RISK";
+        }
 
         // Update akumulasi state
         setAkumulasi(updatedAkumulasi as akumulasiScoreType);
@@ -164,6 +172,7 @@ export default function PeopleFormPage() {
           return {
             ...prevData,
             totalScore: newTotalScore,
+            categoryPeople: newCategory,
             [section]: {
               ...sectionData,
               [field]: value,
@@ -180,13 +189,15 @@ export default function PeopleFormPage() {
 
     try {
       console.log("[v0] Submitting form data:", formData);
-      Swal.fire({
+      const successSwal = await Swal.fire({
         icon: "success",
         title: "Berhasil!",
         text: "Data scoring berhasil disimpan",
         confirmButtonText: "OK",
       });
-      router.push("/people");
+      if (successSwal.isConfirmed) {
+        router.push("/peopleForm");
+      }
     } catch (err) {
       const errorMessage =
         err instanceof Error

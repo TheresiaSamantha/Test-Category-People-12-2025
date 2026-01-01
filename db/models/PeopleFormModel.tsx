@@ -1,9 +1,10 @@
 import { database } from "../config/mongodb";
 import { FormPeople } from "@/types/PeopleTypes";
 import * as z from "zod";
+import { ObjectId } from "mongodb";
 
 const peopleFormSchema = z.object({
-  idPeople: z.string({ message: "personId harus diisi" }),
+  idPeople: z.instanceof(ObjectId, { message: "idPeople harus diisi" }),
   categoryPeople: z.string({ message: "formData harus diisi" }),
   totalScore: z.number({ message: "totalScore harus diisi" }),
 });
@@ -17,6 +18,10 @@ class PeopleFormModel {
     return await collection.findOne({ idPeople: idPeople });
   }
   static async create(formPeopleData: FormPeople) {
+    console.log(
+      "🚀 ~ PeopleFormModel ~ create ~ formPeopleData:",
+      formPeopleData
+    );
     peopleFormSchema.parse(formPeopleData);
     const collection = this.getCollection();
     const result = await collection.insertOne(formPeopleData);

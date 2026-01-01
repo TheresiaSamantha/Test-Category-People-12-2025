@@ -60,3 +60,58 @@ export type FormPeople = {
   info5: info5Type;
   info6: info6Type;
 };
+
+export type akumulasiScoreType = {
+  info1: {
+    bobotInfo: 0;
+    optionScore: {
+      umur: { bobotOption: 0; selectionScore: 0 };
+      umurDanTenor: { bobotOption: 0; selectionScore: 0 };
+      stsPerkawinan: { bobotOption: 0; selectionScore: 0 };
+      pendidikan: { bobotOption: 0; selectionScore: 0 };
+    };
+  };
+  info2: {
+    bobotInfo: 0;
+    optionScore: {
+      alamat: { bobotOption: 0; selectionScore: 0 };
+      kepemilikanRumah: { bobotOption: 0; selectionScore: 0 };
+      lamaTinggal: { bobotOption: 0; selectionScore: 0 };
+    };
+  };
+  info3: {
+    bobotInfo: 0;
+    optionScore: {
+      kategoriPerusahaan: { bobotOption: 0; selectionScore: 0 };
+      jabatan: { bobotOption: 0; selectionScore: 0 };
+      lamaBekerja: { bobotOption: 0; selectionScore: 0 };
+      pendapatanTHPP: { bobotOption: 0; selectionScore: 0 };
+    };
+  };
+  info4: {
+    bobotInfo: 0;
+    optionScore: {
+      rekeningBank: { bobotOption: 0; selectionScore: 0 };
+      avgSaldoBulan: { bobotOption: 0; selectionScore: 0 };
+      trackingPembayaran: { bobotOption: 0; selectionScore: 0 };
+      tracjSLIK: { bobotOption: 0; selectionScore: 0 };
+      typeKartuKredit: { bobotOption: 0; selectionScore: 0 };
+    };
+  };
+  info5: {
+    bobotInfo: 0;
+    optionScore: {
+      tenor: { bobotOption: 0; selectionScore: 0 };
+      debServiceRatio: { bobotOption: 0; selectionScore: 0 };
+    };
+  };
+  info6: {
+    bobotInfo: 0;
+    optionScore: {
+      hasilAppraisal: { bobotOption: 0; selectionScore: 0 };
+      luasBangunan: { bobotOption: 0; selectionScore: 0 };
+      tujuanPembiayaan: { bobotOption: 0; selectionScore: 0 };
+      ltv: { bobotOption: 0; selectionScore: 0 };
+    };
+  };
+};

@@ -21,14 +21,18 @@ export async function GET(
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const body = await request.json();
+    const { id } = await params;
 
     // Convert idPeople string to ObjectId
     const formData: FormPeople = {
       ...body,
-      idPeople: new ObjectId(body.idPeople),
+      idPeople: new ObjectId(id),
     };
 
     const checkExisting = await PeopleFormModel.findbyIdPeople(body.idPeople);

@@ -188,7 +188,42 @@ export default function PeopleFormPage() {
     setLoading(true);
 
     try {
-      console.log("[v0] Submitting form data:", formData);
+      if (
+        !formData.info1.umur ||
+        !formData.info1.umurDanTenor ||
+        !formData.info1.stsPerkawinan ||
+        !formData.info1.pendidikan ||
+        !formData.info2.alamat ||
+        !formData.info2.kepemilikanRumah ||
+        !formData.info2.lamaTinggal ||
+        !formData.info3.kategoriPerusahaan ||
+        !formData.info3.jabatan ||
+        !formData.info3.lamaBekerja ||
+        !formData.info3.pendapatanTHPP ||
+        !formData.info4.rekeningBank ||
+        !formData.info4.avgSaldoBulan ||
+        !formData.info4.trackingPembayaran ||
+        !formData.info4.tracjSLIK ||
+        !formData.info4.typeKartuKredit ||
+        !formData.info5.tenor ||
+        !formData.info5.debServiceRatio ||
+        !formData.info6.hasilAppraisal ||
+        !formData.info6.luasBangunan ||
+        !formData.info6.tujuanPembiayaan ||
+        !formData.info6.ltv
+      ) {
+        throw new Error("Semua bagian formulir harus diisi lengkap.");
+      }
+      const res = await fetch(`/api/people/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        throw json;
+      }
+
       const successSwal = await Swal.fire({
         icon: "success",
         title: "Berhasil!",
@@ -203,6 +238,7 @@ export default function PeopleFormPage() {
         err instanceof Error
           ? err.message
           : "Terjadi kesalahan yang tidak diketahui";
+      console.log("🚀 ~ handleSubmit ~ err.message:", errorMessage);
       setError(errorMessage);
     } finally {
       setLoading(false);

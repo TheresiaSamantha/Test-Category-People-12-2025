@@ -20,6 +20,7 @@ export default function PeopleFormPage() {
   const router = useRouter();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [infoList, setInfoList] = useState<FormOptionDocument[]>([]);
 
@@ -53,57 +54,102 @@ export default function PeopleFormPage() {
 
   const [akumulasi, setAkumulasi] = useState<akumulasiScoreType>();
 
-  // Fetch options from infoList API
+  // Fetch existing data and options together
   useEffect(() => {
-    const fetchOptions = async () => {
+    const fetchDataAndOptions = async () => {
       try {
-        const response = await fetch("/api/infoList");
-        if (response.ok) {
-          const data: FormOptionDocument[] = await response.json();
-          setInfoList(data);
+        setLoadingData(true);
 
-          // Build akumulasi structure from data
-          const akumulasiData: Record<
-            string,
-            {
-              bobotInfo: number;
-              optionScore: Record<
-                string,
-                { bobotOption: number; selectionScore: number }
-              >;
-            }
-          > = {};
+        // Fetch both in parallel
+        const [infoListResponse, existingDataResponse] = await Promise.all([
+          fetch("/api/infoList"),
+          fetch(`/api/people/${id}`),
+        ]);
 
-          data.forEach((doc) => {
-            const infoName = doc.name; // e.g., "info1", "info2", etc.
-
-            akumulasiData[infoName] = {
-              bobotInfo: doc.bobotInfo,
-              optionScore: {},
-            };
-
-            // Process each field in the document
-            Object.keys(doc.fields).forEach((fieldKey) => {
-              const field = doc.fields[fieldKey];
-              akumulasiData[infoName].optionScore[fieldKey] = {
-                bobotOption: field.bobotOptions,
-                selectionScore: 0, // Initial value, will be updated on selection
-              };
-            });
-          });
-
-          setAkumulasi(akumulasiData as akumulasiScoreType);
+        if (!infoListResponse.ok || !existingDataResponse.ok) {
+          throw new Error("Data tidak ditemukan");
         }
-      } catch (error) {
-        console.error(
-          "[v0] Error fetching infoList:",
-          (error as Error).message
-        );
+
+        const infoListData: FormOptionDocument[] =
+          await infoListResponse.json();
+        const existingData = await existingDataResponse.json();
+
+        setInfoList(infoListData);
+
+        // Build akumulasi structure with existing selectionScore
+        const akumulasiData: Record<
+          string,
+          {
+            bobotInfo: number;
+            optionScore: Record<
+              string,
+              { bobotOption: number; selectionScore: number }
+            >;
+          }
+        > = {};
+
+        infoListData.forEach((doc) => {
+          const infoName = doc.name; // e.g., "info1", "info2", etc.
+
+          akumulasiData[infoName] = {
+            bobotInfo: doc.bobotInfo,
+            optionScore: {},
+          };
+
+          // Process each field and populate with existing selection scores
+          Object.keys(doc.fields).forEach((fieldKey) => {
+            const field = doc.fields[fieldKey];
+
+            // Get the existing value for this field from existingData
+            const existingValue = existingData[infoName]?.[fieldKey];
+
+            // Find the score for the existing value
+            let selectionScore = 0;
+            if (existingValue) {
+              const selectedOption = field.options.find(
+                (opt: OptionItem) => opt.value === existingValue
+              );
+              selectionScore = selectedOption?.score || 0;
+            }
+
+            akumulasiData[infoName].optionScore[fieldKey] = {
+              bobotOption: field.bobotOptions,
+              selectionScore: selectionScore,
+            };
+          });
+        });
+
+        setAkumulasi(akumulasiData as akumulasiScoreType);
+
+        // Set form data with existing values
+        setFormData({
+          idPeople: existingData.idPeople,
+          totalScore: existingData.totalScore || 0,
+          categoryPeople: existingData.categoryPeople || "",
+          info1: existingData.info1 || ({} as info1Type),
+          info2: existingData.info2 || ({} as info2Type),
+          info3: existingData.info3 || ({} as info3Type),
+          info4: existingData.info4 || ({} as info4Type),
+          info5: existingData.info5 || ({} as info5Type),
+          info6: existingData.info6 || ({} as info6Type),
+        });
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Gagal memuat data";
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: errorMessage,
+        });
+      } finally {
+        setLoadingData(false);
       }
     };
-    fetchOptions();
-  }, []);
-  console.log("🚀 ~ PeopleFormPage ~ akumulasi:", akumulasi);
+
+    if (id) {
+      fetchDataAndOptions();
+    }
+  }, [id, router]);
 
   const handleInfoChange = (
     section: keyof FormPeople,
@@ -204,8 +250,8 @@ export default function PeopleFormPage() {
 
     try {
       const checkExisting = await fetch(`/api/people/${id}`);
-      if (checkExisting) {
-        throw new Error("Form scoring untuk orang ini sudah ada.");
+      if (!checkExisting.ok) {
+        throw new Error("Data person tidak ditemukan untuk diperbarui.");
       }
       if (
         !formData.info1.umur ||
@@ -234,7 +280,7 @@ export default function PeopleFormPage() {
         throw new Error("Semua bagian formulir harus diisi lengkap.");
       }
       const res = await fetch(`/api/people/${id}`, {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
@@ -250,7 +296,7 @@ export default function PeopleFormPage() {
         confirmButtonText: "OK",
       });
       if (successSwal.isConfirmed) {
-        router.push("/peopleForm");
+        router.push("/");
       }
     } catch (err) {
       const errorMessage =
@@ -324,199 +370,210 @@ export default function PeopleFormPage() {
         <header className="mb-12 border-b-4 border-foreground pb-6 flex justify-between items-end">
           <div>
             <h1 className="text-5xl font-black uppercase tracking-tighter mb-2 italic">
-              People Scoring
+              People Scoring Update
             </h1>
             <p className="text-xl font-medium">
               Formulir Penilaian Detail (ID: {id})
             </p>
           </div>
         </header>
-
-        <form onSubmit={handleSubmit} className="space-y-12">
-          {/* Section 1: Data Personal */}
-          <section className="space-y-6">
-            <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              INFO 01. PERSONAL & STATUS
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
-              {renderSelect("info1", "umur", "Umur Pemohon", "umur")}
-              {renderSelect(
-                "info1",
-                "umurDanTenor",
-                "Umur Pemohon & Tenor",
-                "umurDanTenor"
-              )}
-              {renderSelect(
-                "info1",
-                "stsPerkawinan",
-                "Status Perkawinan",
-                "stsPerkawinan"
-              )}
-              {renderSelect("info1", "pendidikan", "Pendidikan", "pendidikan")}
-            </div>
-          </section>
-
-          {/* Section 2: Domisili */}
-          <section className="space-y-6">
-            <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              INFO 02. TEMPAT TINGGAL
-            </div>
-            <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-6">
-              {renderSelect(
-                "info2",
-                "alamat",
-                "Alamat Tempat Tinggal",
-                "alamat"
-              )}
-              {renderSelect(
-                "info2",
-                "kepemilikanRumah",
-                "Kepemilikan Tempat Tinggal",
-                "kepemilikanRumah"
-              )}
-              {renderSelect(
-                "info2",
-                "lamaTinggal",
-                "Lama Menempati",
-                "lamaTinggal"
-              )}
-            </div>
-          </section>
-
-          {/* Section 3: Pekerjaan */}
-          <section className="space-y-6">
-            <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              INFO 03. PEKERJAAN & PENDAPATAN
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
-              {renderSelect(
-                "info3",
-                "kategoriPerusahaan",
-                "Kategori Perusahaan",
-                "kategoriPerusahaan"
-              )}
-              {renderSelect("info3", "jabatan", "Jabatan", "jabatan")}
-              {renderSelect(
-                "info3",
-                "lamaBekerja",
-                "Lama Berkerja",
-                "lamaBekerja"
-              )}
-              {renderSelect(
-                "info3",
-                "pendapatanTHPP",
-                "Pendapatan THP",
-                "pendapatanTHPP"
-              )}
-            </div>
-          </section>
-
-          {/* Section 4: Perbankan & SLIK */}
-          <section className="space-y-6">
-            <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              INFO 04. KEUANGAN & SLIK
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-4">
-              {renderSelect(
-                "info4",
-                "rekeningBank",
-                "Rekening Bank",
-                "rekeningBank"
-              )}
-              {renderSelect(
-                "info4",
-                "avgSaldoBulan",
-                "Rata - Rata Saldo Bulanan",
-                "avgSaldoBulan"
-              )}
-              {renderSelect(
-                "info4",
-                "trackingPembayaran",
-                "Track Record pembayaran ansuran",
-                "trackingPembayaran"
-              )}
-              {renderSelect(
-                "info4",
-                "tracjSLIK",
-                "Track Data SLIK",
-                "tracjSLIK"
-              )}
-              {renderSelect(
-                "info4",
-                "typeKartuKredit",
-                "Kepemilikan Kartu Kredit",
-                "typeKartuKredit"
-              )}
-            </div>
-          </section>
-
-          {/* Section 5 */}
-          <section className="space-y-6">
-            <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              INFO 05. PINJAMAN
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
-              {renderSelect("info5", "tenor", "Tenor", "tenor")}
-              {renderSelect(
-                "info5",
-                "debServiceRatio",
-                "Debt Service Ratio",
-                "debServiceRatio"
-              )}
-            </div>
-          </section>
-
-          {/* Section 6 */}
-          <section className="space-y-6">
-            <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              INFO 06. JAMINAN
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
-              {renderSelect(
-                "info6",
-                "hasilAppraisal",
-                "Hasil Appraisal",
-                "hasilAppraisal"
-              )}
-              {renderSelect(
-                "info6",
-                "luasBangunan",
-                "Luas Bangunan (m2)",
-                "luasBangunan"
-              )}
-              {renderSelect(
-                "info6",
-                "tujuanPembiayaan",
-                "Tujuan dari Pembiayaan",
-                "tujuanPembiayaan"
-              )}
-              {renderSelect("info6", "ltv", "LTV", "ltv")}
-            </div>
-          </section>
-
-          {/* Hasil */}
-          <section className="space-y-6">
-            <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              Hasil:
-            </div>
-            <div className="grid md:grid-cols-2 gap-12">
-              <div className="bg-yellow-400 border-4 border-foreground p-4 font-black text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                SCORE: {formData.totalScore}
+        {loadingData ? (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-foreground"></div>
+            <p className="mt-4 font-bold">Loading data...</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-12">
+            {/* Section 1: Data Personal */}
+            <section className="space-y-6">
+              <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                INFO 01. PERSONAL & STATUS
               </div>
-              <div className=" border-4 border-foreground p-4 font-black text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                Kategori: {formData.categoryPeople || "-"}
+              <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+                {renderSelect("info1", "umur", "Umur Pemohon", "umur")}
+                {renderSelect(
+                  "info1",
+                  "umurDanTenor",
+                  "Umur Pemohon & Tenor",
+                  "umurDanTenor"
+                )}
+                {renderSelect(
+                  "info1",
+                  "stsPerkawinan",
+                  "Status Perkawinan",
+                  "stsPerkawinan"
+                )}
+                {renderSelect(
+                  "info1",
+                  "pendidikan",
+                  "Pendidikan",
+                  "pendidikan"
+                )}
               </div>
-            </div>
-          </section>
+            </section>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary text-primary-foreground border-4 border-foreground p-6 font-black uppercase text-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all disabled:opacity-50"
-          >
-            {loading ? "SAVING..." : "SIMPAN SCORING"}
-          </button>
-        </form>
+            {/* Section 2: Domisili */}
+            <section className="space-y-6">
+              <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                INFO 02. TEMPAT TINGGAL
+              </div>
+              <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-6">
+                {renderSelect(
+                  "info2",
+                  "alamat",
+                  "Alamat Tempat Tinggal",
+                  "alamat"
+                )}
+                {renderSelect(
+                  "info2",
+                  "kepemilikanRumah",
+                  "Kepemilikan Tempat Tinggal",
+                  "kepemilikanRumah"
+                )}
+                {renderSelect(
+                  "info2",
+                  "lamaTinggal",
+                  "Lama Menempati",
+                  "lamaTinggal"
+                )}
+              </div>
+            </section>
+
+            {/* Section 3: Pekerjaan */}
+            <section className="space-y-6">
+              <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                INFO 03. PEKERJAAN & PENDAPATAN
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+                {renderSelect(
+                  "info3",
+                  "kategoriPerusahaan",
+                  "Kategori Perusahaan",
+                  "kategoriPerusahaan"
+                )}
+                {renderSelect("info3", "jabatan", "Jabatan", "jabatan")}
+                {renderSelect(
+                  "info3",
+                  "lamaBekerja",
+                  "Lama Berkerja",
+                  "lamaBekerja"
+                )}
+                {renderSelect(
+                  "info3",
+                  "pendapatanTHPP",
+                  "Pendapatan THP",
+                  "pendapatanTHPP"
+                )}
+              </div>
+            </section>
+
+            {/* Section 4: Perbankan & SLIK */}
+            <section className="space-y-6">
+              <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                INFO 04. KEUANGAN & SLIK
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-4">
+                {renderSelect(
+                  "info4",
+                  "rekeningBank",
+                  "Rekening Bank",
+                  "rekeningBank"
+                )}
+                {renderSelect(
+                  "info4",
+                  "avgSaldoBulan",
+                  "Rata - Rata Saldo Bulanan",
+                  "avgSaldoBulan"
+                )}
+                {renderSelect(
+                  "info4",
+                  "trackingPembayaran",
+                  "Track Record pembayaran ansuran",
+                  "trackingPembayaran"
+                )}
+                {renderSelect(
+                  "info4",
+                  "tracjSLIK",
+                  "Track Data SLIK",
+                  "tracjSLIK"
+                )}
+                {renderSelect(
+                  "info4",
+                  "typeKartuKredit",
+                  "Kepemilikan Kartu Kredit",
+                  "typeKartuKredit"
+                )}
+              </div>
+            </section>
+
+            {/* Section 5 */}
+            <section className="space-y-6">
+              <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                INFO 05. PINJAMAN
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+                {renderSelect("info5", "tenor", "Tenor", "tenor")}
+                {renderSelect(
+                  "info5",
+                  "debServiceRatio",
+                  "Debt Service Ratio",
+                  "debServiceRatio"
+                )}
+              </div>
+            </section>
+
+            {/* Section 6 */}
+            <section className="space-y-6">
+              <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                INFO 06. JAMINAN
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+                {renderSelect(
+                  "info6",
+                  "hasilAppraisal",
+                  "Hasil Appraisal",
+                  "hasilAppraisal"
+                )}
+                {renderSelect(
+                  "info6",
+                  "luasBangunan",
+                  "Luas Bangunan (m2)",
+                  "luasBangunan"
+                )}
+                {renderSelect(
+                  "info6",
+                  "tujuanPembiayaan",
+                  "Tujuan dari Pembiayaan",
+                  "tujuanPembiayaan"
+                )}
+                {renderSelect("info6", "ltv", "LTV", "ltv")}
+              </div>
+            </section>
+
+            {/* Hasil */}
+            <section className="space-y-6">
+              <div className="bg-primary text-primary-foreground inline-block px-4 py-1 border-4 border-foreground font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                Hasil:
+              </div>
+              <div className="grid md:grid-cols-2 gap-12">
+                <div className="bg-yellow-400 border-4 border-foreground p-4 font-black text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  SCORE: {formData.totalScore}
+                </div>
+                <div className=" border-4 border-foreground p-4 font-black text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  Kategori: {formData.categoryPeople || "-"}
+                </div>
+              </div>
+            </section>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary text-primary-foreground border-4 border-foreground p-6 font-black uppercase text-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all disabled:opacity-50"
+            >
+              {loading ? "SAVING..." : "SIMPAN SCORING"}
+            </button>
+          </form>
+        )}
       </div>
     </main>
   );

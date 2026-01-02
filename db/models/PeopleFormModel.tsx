@@ -17,7 +17,6 @@ class PeopleFormModel {
     const collection = this.getCollection();
     const idPeople = new ObjectId(id);
     const data = await collection.findOne({ idPeople: idPeople });
-    console.log("🚀 ~ PeopleFormModel ~ findbyIdPeople ~ data:", data);
     return data;
   }
   static async create(formPeopleData: FormPeople) {
@@ -28,11 +27,16 @@ class PeopleFormModel {
   }
   static async updateByIdPeople(id: string, updateData: Partial<FormPeople>) {
     const collection = this.getCollection();
-    return await collection.updateOne({ idPeople: id }, { $set: updateData });
+    const idPeople = new ObjectId(id);
+    return await collection.updateOne(
+      { idPeople: idPeople },
+      { $set: updateData }
+    );
   }
   static async deleteByIdPeople(id: string) {
     const collection = this.getCollection();
-    return await collection.deleteOne({ idPeople: id });
+    const idPeople = new ObjectId(id);
+    return await collection.deleteOne({ idPeople: idPeople });
   }
 }
 

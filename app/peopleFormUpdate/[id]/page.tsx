@@ -90,7 +90,7 @@ export default function PeopleInputPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...formData, _id: id }),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {

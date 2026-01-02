@@ -161,7 +161,7 @@ export default function PeopleTable() {
                 <td className="px-6 py-4 text-right">
                   <div className="flex gap-2 justify-end">
                     <Link
-                      href={`/people/${person._id}`}
+                      href={`/peopleFormUpdate/${person._id}`}
                       className="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
                       title="Edit"
                     >

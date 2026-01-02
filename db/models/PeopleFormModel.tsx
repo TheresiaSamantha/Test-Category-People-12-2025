@@ -13,9 +13,12 @@ class PeopleFormModel {
   static getCollection() {
     return database.collection("PeopleForm");
   }
-  static async findbyIdPeople(idPeople: string) {
+  static async findbyIdPeople(id: string) {
     const collection = this.getCollection();
-    return await collection.findOne({ idPeople: idPeople });
+    const idPeople = new ObjectId(id);
+    const data = await collection.findOne({ idPeople: idPeople });
+    console.log("🚀 ~ PeopleFormModel ~ findbyIdPeople ~ data:", data);
+    return data;
   }
   static async create(formPeopleData: FormPeople) {
     peopleFormSchema.parse(formPeopleData);

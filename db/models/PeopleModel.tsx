@@ -31,7 +31,9 @@ class PeopleModel {
   }
   static async findById(id: string) {
     const collection = this.getCollection();
-    return await collection.findOne({ _id: new ObjectId(id) });
+    const data = await collection.findOne({ _id: new ObjectId(id) });
+    console.log("🚀 ~ PeopleModel ~ findById ~ data:", data);
+    return data;
   }
   static async updateById(id: string, updateData: Partial<People>) {
     const collection = this.getCollection();

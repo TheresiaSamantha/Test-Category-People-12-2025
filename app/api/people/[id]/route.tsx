@@ -6,16 +6,11 @@ import { ObjectId } from "mongodb";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const personForm = await PeopleFormModel.findbyIdPeople(params.id);
-    if (!personForm) {
-      return Response.json(
-        { message: "Person form not found" },
-        { status: 404 }
-      );
-    }
+    const { id } = await params;
+    const personForm = await PeopleFormModel.findbyIdPeople(id);
     return Response.json(personForm, { status: 200 });
   } catch (error) {
     return errHandler(error);
@@ -24,7 +19,7 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
@@ -52,12 +47,13 @@ export async function POST(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const updatedPersonForm = await PeopleFormModel.updateByIdPeople(
-      params.id,
+      id,
       body as Partial<FormPeople>
     );
     return Response.json(updatedPersonForm, { status: 200 });
@@ -67,7 +63,7 @@ export async function PUT(
 }
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;

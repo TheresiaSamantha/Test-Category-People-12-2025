@@ -21,22 +21,23 @@ class PeopleFormModel {
   }
   static async create(formPeopleData: FormPeople) {
     peopleFormSchema.parse(formPeopleData);
+    console.log(
+      "🚀 ~ PeopleFormModel ~ create ~ formPeopleData:",
+      formPeopleData
+    );
     const collection = this.getCollection();
     const result = await collection.insertOne(formPeopleData);
     return result;
   }
   static async updateByIdPeople(id: string, updateData: Partial<FormPeople>) {
     const collection = this.getCollection();
-    const idPeople = new ObjectId(id);
-    return await collection.updateOne(
-      { idPeople: idPeople },
-      { $set: updateData }
-    );
+    const idPe = new ObjectId(id);
+    return await collection.updateOne({ idPeople: idPe }, { $set: updateData });
   }
   static async deleteByIdPeople(id: string) {
     const collection = this.getCollection();
-    const idPeople = new ObjectId(id);
-    return await collection.deleteOne({ idPeople: idPeople });
+    const idPe = new ObjectId(id);
+    return await collection.deleteOne({ idPeople: idPe });
   }
 }
 

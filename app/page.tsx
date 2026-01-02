@@ -1,10 +1,27 @@
-export default function Home() {
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import PeopleTable from "@/components/PeopleTable";
+
+export default async function Home() {
+  const cookieStore = await cookies();
+  const isSignedIn = cookieStore.get("Authorization")?.value ? true : false;
+
+  if (!isSignedIn) {
+    redirect("/login");
+  }
+
   return (
-    <div className="flex min-h-screen bg-zinc-50 font-sans dark:bg-black">
-      <h1 className="text-4xl font-bold text-zinc-800 dark:text-zinc-200 sm:text-5xl">
-        Welcome to{" "}
-        <span className="text-blue-600 dark:text-blue-400">Next.js!</span>
-      </h1>
-    </div>
+    <main className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Data Masyarakat</h1>
+          <p className="text-gray-600 mt-2">
+            Kelola data masyarakat dengan mudah
+          </p>
+        </div>
+
+        <PeopleTable />
+      </div>
+    </main>
   );
 }

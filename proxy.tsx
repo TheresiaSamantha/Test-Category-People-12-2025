@@ -43,5 +43,5 @@ export async function proxy(request: Request) {
 }
 
 export const config = {
-  matcher: ["/api/peopleDummy/:path*"],
+  matcher: ["/api/people/:path*"],
 };

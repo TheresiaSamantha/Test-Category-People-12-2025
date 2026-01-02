@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
@@ -10,6 +10,21 @@ export default function PeopleInputPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
+
+  // Check authentication
+  useEffect(() => {
+    const checkAuth = async () => {
+      const cookies = document.cookie.split(";");
+      const authCookie = cookies.find((c) =>
+        c.trim().startsWith("Authorization=")
+      );
+
+      if (!authCookie) {
+        router.push("/login");
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   const clearWarning = () => {
     setTimeout(() => setWarning(null), 3000);

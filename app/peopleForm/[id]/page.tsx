@@ -23,6 +23,21 @@ export default function PeopleFormPage() {
   const [error, setError] = useState<string | null>(null);
   const [infoList, setInfoList] = useState<FormOptionDocument[]>([]);
 
+  // Check authentication
+  useEffect(() => {
+    const checkAuth = async () => {
+      const cookies = document.cookie.split(";");
+      const authCookie = cookies.find((c) =>
+        c.trim().startsWith("Authorization=")
+      );
+
+      if (!authCookie) {
+        router.push("/login");
+      }
+    };
+    checkAuth();
+  }, [router]);
+
   // Initial state following FormPeople structure
   const [formData, setFormData] = useState<FormPeople>({
     idPeople: id as string,

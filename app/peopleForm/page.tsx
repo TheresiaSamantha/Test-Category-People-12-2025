@@ -43,6 +43,8 @@ export default function PeopleInputPage() {
         throw new Error(errorData.message || "Gagal menyimpan data");
       }
 
+      const data = await response.json();
+
       Swal.fire({
         icon: "success",
         title: "Berhasil!",
@@ -60,6 +62,7 @@ export default function PeopleInputPage() {
         alamat: "",
       });
       router.refresh();
+      window.location.href = `/peopleForm/${data.insertedId}`;
     } catch (err) {
       const errorMessage =
         err instanceof Error
@@ -68,17 +71,16 @@ export default function PeopleInputPage() {
       setError(errorMessage);
     } finally {
       setLoading(false);
+      if (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Kesalahan",
+          text: error,
+          confirmButtonText: "OK",
+        });
+      }
     }
   };
-
-  if (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Kesalahan",
-      text: error,
-      confirmButtonText: "OK",
-    });
-  }
 
   const handleChange = (
     e: React.ChangeEvent<

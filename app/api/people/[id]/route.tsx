@@ -1,0 +1,77 @@
+import PeopleFormModel from "@/db/models/PeopleFormModel";
+import { FormPeople } from "@/types/PeopleTypes";
+import errHandler from "@/helpers/errHandler";
+import { ObjectId } from "mongodb";
+
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const personForm = await PeopleFormModel.findbyIdPeople(params.id);
+    if (!personForm) {
+      return Response.json(
+        { message: "Person form not found" },
+        { status: 404 }
+      );
+    }
+    return Response.json(personForm, { status: 200 });
+  } catch (error) {
+    return errHandler(error);
+  }
+}
+
+export async function POST(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const body = await request.json();
+    const { id } = await params;
+
+    // Convert idPeople string to ObjectId
+    const formData: FormPeople = {
+      ...body,
+      idPeople: new ObjectId(id),
+    };
+
+    const checkExisting = await PeopleFormModel.findbyIdPeople(body.idPeople);
+    if (checkExisting) {
+      return Response.json(
+        { message: "Person form already exists" },
+        { status: 409 }
+      );
+    }
+    const newPersonForm = await PeopleFormModel.create(formData);
+    return Response.json(newPersonForm, { status: 201 });
+  } catch (error) {
+    return errHandler(error);
+  }
+}
+
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const body = await request.json();
+    const updatedPersonForm = await PeopleFormModel.updateByIdPeople(
+      params.id,
+      body as Partial<FormPeople>
+    );
+    return Response.json(updatedPersonForm, { status: 200 });
+  } catch (error) {
+    return errHandler(error);
+  }
+}
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const deletedPersonForm = await PeopleFormModel.deleteByIdPeople(params.id);
+    return Response.json(deletedPersonForm, { status: 200 });
+  } catch (error) {
+    return errHandler(error);
+  }
+}

@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 
 export async function proxy(request: Request) {
   try {
-    console.log("masuk proxy");
     const cookieStore = await cookies();
     const authtoken = cookieStore.get("Authorization");
 

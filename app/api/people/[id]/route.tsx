@@ -1,4 +1,5 @@
 import PeopleFormModel from "@/db/models/PeopleFormModel";
+import PeopleModel from "@/db/models/PeopleModel";
 import { FormPeople } from "@/types/PeopleTypes";
 import errHandler from "@/helpers/errHandler";
 import { ObjectId } from "mongodb";
@@ -69,8 +70,10 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const deletedPersonForm = await PeopleFormModel.deleteByIdPeople(params.id);
-    return Response.json(deletedPersonForm, { status: 200 });
+    const { id } = await params;
+    await PeopleFormModel.deleteByIdPeople(id);
+    const deletedPerson = await PeopleModel.deleteById(id);
+    return Response.json(deletedPerson, { status: 200 });
   } catch (error) {
     return errHandler(error);
   }

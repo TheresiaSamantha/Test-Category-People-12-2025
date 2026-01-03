@@ -1,0 +1,209 @@
+[
+  {
+    "_id": { "$oid": "665a20000000000000000001" },
+    "idPeople": { "$oid": "665a10000000000000000001" },
+    "totalScore": 82,
+    "categoryPeople": "Low Risk",
+
+    "info1": {
+      "umur": "31-45",
+      "umurDanTenor": "dibawah_ketentuan",
+      "stsPerkawinan": "k_lte_2",
+      "pendidikan": "s1"
+    },
+    "info2": {
+      "alamat": "sesuai",
+      "kepemilikanRumah": "milik_sendiri",
+      "lamaTinggal": "gt_8"
+    },
+    "info3": {
+      "kategoriPerusahaan": "swasta_1",
+      "jabatan": "direktur",
+      "lamaBekerja": "gt_10",
+      "pendapatanTHPP": "gt_50"
+    },
+    "info4": {
+      "rekeningBank": "lengkap",
+      "avgSaldoBulan": "gt_50",
+      "trackingPembayaran": "tepat",
+      "tracjSLIK": "lancar",
+      "typeKartuKredit": "platinum"
+    },
+    "info5": {
+      "tenor": "lte_5",
+      "debServiceRatio": "lte_30"
+    },
+    "info6": {
+      "hasilAppraisal": "marketable",
+      "luasBangunan": "lte_45",
+      "tujuanPembiayaan": "hunian_pertama",
+      "ltv": "lte_70"
+    }
+  },
+  {
+    "_id": { "$oid": "665a20000000000000000002" },
+    "idPeople": { "$oid": "665a10000000000000000002" },
+    "totalScore": 68,
+    "categoryPeople": "Medium Risk",
+
+    "info1": {
+      "umur": "46-55",
+      "umurDanTenor": "dibawah_ketentuan",
+      "stsPerkawinan": "k_gt_2",
+      "pendidikan": "diploma"
+    },
+    "info2": {
+      "alamat": "sesuai",
+      "kepemilikanRumah": "angsuran",
+      "lamaTinggal": "5_8"
+    },
+    "info3": {
+      "kategoriPerusahaan": "swasta_2",
+      "jabatan": "staff",
+      "lamaBekerja": "5_10",
+      "pendapatanTHPP": "25_50"
+    },
+    "info4": {
+      "rekeningBank": "tabungan",
+      "avgSaldoBulan": "25_50",
+      "trackingPembayaran": "terlambat",
+      "tracjSLIK": "tunggakan",
+      "typeKartuKredit": "gold"
+    },
+    "info5": {
+      "tenor": "5_10",
+      "debServiceRatio": "30_40"
+    },
+    "info6": {
+      "hasilAppraisal": "marketable",
+      "luasBangunan": "45_100",
+      "tujuanPembiayaan": "renovasi",
+      "ltv": "gt_70"
+    }
+  },
+  {
+    "_id": { "$oid": "665a20000000000000000003" },
+    "idPeople": { "$oid": "665a10000000000000000003" },
+    "totalScore": 80,
+    "categoryPeople": "Low Risk",
+
+    "info1": {
+      "umur": "31-45",
+      "umurDanTenor": "dibawah_ketentuan",
+      "stsPerkawinan": "bk_0",
+      "pendidikan": "s2_s3"
+    },
+    "info2": {
+      "alamat": "sesuai",
+      "kepemilikanRumah": "milik_sendiri",
+      "lamaTinggal": "5_8"
+    },
+    "info3": {
+      "kategoriPerusahaan": "departemen",
+      "jabatan": "staff",
+      "lamaBekerja": "5_10",
+      "pendapatanTHPP": "25_50"
+    },
+    "info4": {
+      "rekeningBank": "lengkap",
+      "avgSaldoBulan": "25_50",
+      "trackingPembayaran": "tepat",
+      "tracjSLIK": "lancar",
+      "typeKartuKredit": "gold"
+    },
+    "info5": {
+      "tenor": "5_10",
+      "debServiceRatio": "lte_30"
+    },
+    "info6": {
+      "hasilAppraisal": "marketable",
+      "luasBangunan": "45_100",
+      "tujuanPembiayaan": "hunian_pertama",
+      "ltv": "lte_70"
+    }
+  },
+
+  {
+    "_id": { "$oid": "665a20000000000000000004" },
+    "idPeople": { "$oid": "665a10000000000000000004" },
+    "totalScore": 52,
+    "categoryPeople": "High Risk",
+
+    "info1": {
+      "umur": "56-65",
+      "umurDanTenor": "diatas_ketentuan",
+      "stsPerkawinan": "k_gt_2",
+      "pendidikan": "sma"
+    },
+    "info2": {
+      "alamat": "tidak_sesuai",
+      "kepemilikanRumah": "sewa",
+      "lamaTinggal": "lte_2"
+    },
+    "info3": {
+      "kategoriPerusahaan": "swasta_3",
+      "jabatan": "staff",
+      "lamaBekerja": "lte_2",
+      "pendapatanTHPP": "lte_10"
+    },
+    "info4": {
+      "rekeningBank": "none",
+      "avgSaldoBulan": "lte_10",
+      "trackingPembayaran": "baru",
+      "tracjSLIK": "kol_3_5",
+      "typeKartuKredit": "none"
+    },
+    "info5": {
+      "tenor": "gt_15",
+      "debServiceRatio": "gt_50"
+    },
+    "info6": {
+      "hasilAppraisal": "tidak",
+      "luasBangunan": "gt_200",
+      "tujuanPembiayaan": "lainnya",
+      "ltv": "gt_100"
+    }
+  },
+
+  {
+    "_id": { "$oid": "665a20000000000000000005" },
+    "idPeople": { "$oid": "665a10000000000000000005" },
+    "totalScore": 66,
+    "categoryPeople": "Medium Risk",
+
+    "info1": {
+      "umur": "21-30",
+      "umurDanTenor": "dibawah_ketentuan",
+      "stsPerkawinan": "bk_lte_2",
+      "pendidikan": "s1"
+    },
+    "info2": {
+      "alamat": "sesuai",
+      "kepemilikanRumah": "angsuran",
+      "lamaTinggal": "2_5"
+    },
+    "info3": {
+      "kategoriPerusahaan": "swasta_2",
+      "jabatan": "staff",
+      "lamaBekerja": "2_5",
+      "pendapatanTHPP": "10_25"
+    },
+    "info4": {
+      "rekeningBank": "tabungan",
+      "avgSaldoBulan": "10_25",
+      "trackingPembayaran": "terlambat",
+      "tracjSLIK": "no_fasilitas",
+      "typeKartuKredit": "basic"
+    },
+    "info5": {
+      "tenor": "10_15",
+      "debServiceRatio": "40_50"
+    },
+    "info6": {
+      "hasilAppraisal": "marketable",
+      "luasBangunan": "100_200",
+      "tujuanPembiayaan": "investasi",
+      "ltv": "gt_80"
+    }
+  }
+]

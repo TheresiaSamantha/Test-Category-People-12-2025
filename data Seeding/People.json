@@ -1,0 +1,52 @@
+[
+  {
+    "_id": { "$oid": "665a10000000000000000001" },
+    "noApp": "app01",
+    "nama": "Alice",
+    "tempatLahir": "Bekasi",
+    "tanggalLahir": "1977-10-31",
+    "Kelamin": "Perempuan",
+    "kodePos": "12345",
+    "alamat": "Jln alamat nomor 12"
+  },
+  {
+    "_id": { "$oid": "665a10000000000000000002" },
+    "noApp": "app02",
+    "nama": "Budi",
+    "tempatLahir": "Jakarta",
+    "tanggalLahir": "1985-06-12",
+    "Kelamin": "Laki-laki",
+    "kodePos": "12450",
+    "alamat": "Jln Merdeka No 5"
+  },
+  {
+    "_id": { "$oid": "665a10000000000000000003" },
+    "noApp": "app03",
+    "nama": "Citra",
+    "tempatLahir": "Bandung",
+    "tanggalLahir": "1990-01-20",
+    "Kelamin": "Perempuan",
+    "kodePos": "40123",
+    "alamat": "Jln Asia Afrika 10"
+  },
+  {
+    "_id": { "$oid": "665a10000000000000000004" },
+    "noApp": "app04",
+    "nama": "Deni",
+    "tempatLahir": "Surabaya",
+    "tanggalLahir": "1970-08-05",
+    "Kelamin": "Laki-laki",
+    "kodePos": "60231",
+    "alamat": "Jln Pahlawan 8"
+  },
+  {
+    "_id": { "$oid": "665a10000000000000000005" },
+    "noApp": "app05",
+    "nama": "Eka",
+    "tempatLahir": "Semarang",
+    "tanggalLahir": "1995-11-15",
+    "Kelamin": "Perempuan",
+    "kodePos": "50134",
+    "alamat": "Jln Pemuda 20"
+  }
+]

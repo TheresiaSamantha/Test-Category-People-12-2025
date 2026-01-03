@@ -1,0 +1,290 @@
+[
+  {
+    "name": "info1",
+    "bobotInfo": 5,
+    "fields": {
+      "umur": {
+        "bobotOptions": 30,
+        "options": [
+          { "label": "56 - 65 Tahun", "value": "56-65", "score": 25 },
+          { "label": "21 - 30 Tahun", "value": "21-30", "score": 50 },
+          { "label": "31 - 45 Tahun", "value": "31-45", "score": 100 },
+          { "label": "46 - 55 Tahun", "value": "46-55", "score": 75 }
+        ]
+      },
+      "umurDanTenor": {
+        "bobotOptions": 10,
+        "options": [
+          {
+            "label": "Diatas Ketentuan",
+            "value": "diatas_ketentuan",
+            "score": 25
+          },
+          {
+            "label": "Dibawah Ketentuan",
+            "value": "dibawah_ketentuan",
+            "score": 100
+          }
+        ]
+      },
+      "stsPerkawinan": {
+        "bobotOptions": 40,
+        "options": [
+          {
+            "label": "Belum Kawin > 2 tanggungan",
+            "value": "bk_gt_2",
+            "score": 25
+          },
+          {
+            "label": "Belum Kawin <= 2 tanggungan",
+            "value": "bk_lte_2",
+            "score": 45
+          },
+          { "label": "Belum Kawin 0 tanggungan", "value": "bk_0", "score": 65 },
+          { "label": "Kawin > 2 tanggungan", "value": "k_gt_2", "score": 85 },
+          { "label": "Kawin <= 2 tanggungan", "value": "k_lte_2", "score": 100 }
+        ]
+      },
+      "pendidikan": {
+        "bobotOptions": 20,
+        "options": [
+          { "label": "SMA atau dibawahnya", "value": "sma", "score": 25 },
+          { "label": "D1 - D4", "value": "diploma", "score": 50 },
+          { "label": "S1", "value": "s1", "score": 75 },
+          { "label": "S2 / S3", "value": "s2_s3", "score": 100 }
+        ]
+      }
+    }
+  },
+
+  {
+    "name": "info2",
+    "bobotInfo": 5,
+    "fields": {
+      "alamat": {
+        "bobotOptions": 40,
+        "options": [
+          {
+            "label": "Tidak sesuai data Bank",
+            "value": "tidak_sesuai",
+            "score": 25
+          },
+          { "label": "Sesuai data Bank", "value": "sesuai", "score": 100 }
+        ]
+      },
+      "kepemilikanRumah": {
+        "bobotOptions": 30,
+        "options": [
+          { "label": "Lain-lain", "value": "lainnya", "score": 25 },
+          { "label": "Sewa / Kontrak", "value": "sewa", "score": 50 },
+          {
+            "label": "Milik sendiri diangsur",
+            "value": "angsuran",
+            "score": 75
+          },
+          { "label": "Milik sendiri", "value": "milik_sendiri", "score": 100 }
+        ]
+      },
+      "lamaTinggal": {
+        "bobotOptions": 30,
+        "options": [
+          { "label": "<= 2 Tahun", "value": "lte_2", "score": 25 },
+          { "label": "2 - 5 Tahun", "value": "2_5", "score": 50 },
+          { "label": "5 - 8 Tahun", "value": "5_8", "score": 75 },
+          { "label": "> 8 Tahun", "value": "gt_8", "score": 100 }
+        ]
+      }
+    }
+  },
+
+  {
+    "name": "info3",
+    "bobotInfo": 20,
+    "fields": {
+      "kategoriPerusahaan": {
+        "bobotOptions": 20,
+        "options": [
+          {
+            "label": "Lembaga Departemen",
+            "value": "departemen",
+            "score": 100
+          },
+          { "label": "BUMD", "value": "bumd", "score": 25 },
+          {
+            "label": "Swasta tanpa rating",
+            "value": "swasta_no_rating",
+            "score": 100
+          },
+          {
+            "label": "Swasta dengan rating",
+            "value": "swasta_rating",
+            "score": 25
+          },
+          { "label": "Swasta Kategori I", "value": "swasta_1", "score": 75 },
+          { "label": "Swasta Kategori II", "value": "swasta_2", "score": 50 },
+          { "label": "Swasta Kategori III", "value": "swasta_3", "score": 0 }
+        ]
+      },
+      "jabatan": {
+        "bobotOptions": 20,
+        "options": [
+          { "label": "Staff", "value": "staff", "score": 25 },
+          { "label": "Direktur", "value": "direktur", "score": 75 },
+          { "label": "Komisaris", "value": "komisaris", "score": 100 }
+        ]
+      },
+      "lamaBekerja": {
+        "bobotOptions": 20,
+        "options": [
+          { "label": "<= 2 Tahun", "value": "lte_2", "score": 0 },
+          { "label": "2 - 5 Tahun", "value": "2_5", "score": 25 },
+          { "label": "5 - 10 Tahun", "value": "5_10", "score": 75 },
+          { "label": "> 10 Tahun", "value": "gt_10", "score": 100 }
+        ]
+      },
+      "pendapatanTHPP": {
+        "bobotOptions": 40,
+        "options": [
+          { "label": "<= 10 Juta", "value": "lte_10", "score": 25 },
+          { "label": "10 - 25 Juta", "value": "10_25", "score": 50 },
+          { "label": "25 - 50 Juta", "value": "25_50", "score": 75 },
+          { "label": "> 50 Juta", "value": "gt_50", "score": 100 }
+        ]
+      }
+    }
+  },
+
+  {
+    "name": "info4",
+    "bobotInfo": 15,
+    "fields": {
+      "rekeningBank": {
+        "bobotOptions": 10,
+        "options": [
+          { "label": "Tidak Ada", "value": "none", "score": 25 },
+          { "label": "Tabungan", "value": "tabungan", "score": 50 },
+          { "label": "Giro", "value": "giro", "score": 75 },
+          {
+            "label": "Tabungan/Giro + Deposito",
+            "value": "lengkap",
+            "score": 100
+          }
+        ]
+      },
+      "avgSaldoBulan": {
+        "bobotOptions": 15,
+        "options": [
+          { "label": "<= 10 Juta", "value": "lte_10", "score": 25 },
+          { "label": "10 - 25 Juta", "value": "10_25", "score": 50 },
+          { "label": "25 - 50 Juta", "value": "25_50", "score": 75 },
+          { "label": "> 50 Juta", "value": "gt_50", "score": 100 }
+        ]
+      },
+      "trackingPembayaran": {
+        "bobotOptions": 15,
+        "options": [
+          { "label": "Peminjam Baru", "value": "baru", "score": 25 },
+          {
+            "label": "Terlambat tapi lancar",
+            "value": "terlambat",
+            "score": 50
+          },
+          { "label": "Tepat waktu", "value": "tepat", "score": 100 }
+        ]
+      },
+      "tracjSLIK": {
+        "bobotOptions": 40,
+        "options": [
+          { "label": "Kolektibilitas 3-5", "value": "kol_3_5", "score": 0 },
+          { "label": "Tunggakan < 3 bulan", "value": "tunggakan", "score": 50 },
+          {
+            "label": "Tidak ada fasilitas",
+            "value": "no_fasilitas",
+            "score": 75
+          },
+          { "label": "Lancar", "value": "lancar", "score": 100 }
+        ]
+      },
+      "typeKartuKredit": {
+        "bobotOptions": 20,
+        "options": [
+          { "label": "Tidak Ada", "value": "none", "score": 25 },
+          { "label": "Basic", "value": "basic", "score": 50 },
+          { "label": "Gold", "value": "gold", "score": 75 },
+          { "label": "Platinum+", "value": "platinum", "score": 100 }
+        ]
+      }
+    }
+  },
+
+  {
+    "name": "info5",
+    "bobotInfo": 30,
+    "fields": {
+      "tenor": {
+        "bobotOptions": 25,
+        "options": [
+          { "label": "> 15 Tahun", "value": "gt_15", "score": 25 },
+          { "label": "10 - 15 Tahun", "value": "10_15", "score": 50 },
+          { "label": "5 - 10 Tahun", "value": "5_10", "score": 75 },
+          { "label": "<= 5 Tahun", "value": "lte_5", "score": 100 }
+        ]
+      },
+      "debServiceRatio": {
+        "bobotOptions": 75,
+        "options": [
+          { "label": "> 50%", "value": "gt_50", "score": 0 },
+          { "label": "40 - 50%", "value": "40_50", "score": 50 },
+          { "label": "30 - 40%", "value": "30_40", "score": 75 },
+          { "label": "<= 30%", "value": "lte_30", "score": 100 }
+        ]
+      }
+    }
+  },
+
+  {
+    "name": "info6",
+    "bobotInfo": 25,
+    "fields": {
+      "hasilAppraisal": {
+        "bobotOptions": 10,
+        "options": [
+          { "label": "Tidak Direkomendasikan", "value": "tidak", "score": 0 },
+          { "label": "Marketable", "value": "marketable", "score": 100 }
+        ]
+      },
+      "luasBangunan": {
+        "bobotOptions": 20,
+        "options": [
+          { "label": "> 200 m2", "value": "gt_200", "score": 25 },
+          { "label": "100 - 200 m2", "value": "100_200", "score": 50 },
+          { "label": "45 - 100 m2", "value": "45_100", "score": 75 },
+          { "label": "<= 45 m2", "value": "lte_45", "score": 100 }
+        ]
+      },
+      "tujuanPembiayaan": {
+        "bobotOptions": 10,
+        "options": [
+          { "label": "Lain-lain", "value": "lainnya", "score": 25 },
+          {
+            "label": "Investasi / Disewakan",
+            "value": "investasi",
+            "score": 50
+          },
+          { "label": "Renovasi", "value": "renovasi", "score": 75 },
+          { "label": "Hunian pertama", "value": "hunian_pertama", "score": 100 }
+        ]
+      },
+      "ltv": {
+        "bobotOptions": 60,
+        "options": [
+          { "label": "LTV > 100%", "value": "gt_100", "score": 0 },
+          { "label": "LTV > 90%", "value": "gt_90", "score": 25 },
+          { "label": "LTV > 80%", "value": "gt_80", "score": 50 },
+          { "label": "LTV > 70%", "value": "gt_70", "score": 75 },
+          { "label": "LTV <= 70%", "value": "lte_70", "score": 100 }
+        ]
+      }
+    }
+  }
+]

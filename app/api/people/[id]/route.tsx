@@ -6,16 +6,11 @@ import { ObjectId } from "mongodb";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const personForm = await PeopleFormModel.findbyIdPeople(params.id);
-    if (!personForm) {
-      return Response.json(
-        { message: "Person form not found" },
-        { status: 404 }
-      );
-    }
+    const { id } = await params;
+    const personForm = await PeopleFormModel.findbyIdPeople(id);
     return Response.json(personForm, { status: 200 });
   } catch (error) {
     return errHandler(error);
@@ -24,11 +19,20 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
     const { id } = await params;
+
+    // Check if already exists before creating
+    const checkExisting = await PeopleFormModel.findbyIdPeople(id);
+    if (checkExisting) {
+      return Response.json(
+        { message: "Person form already exists" },
+        { status: 409 }
+      );
+    }
 
     // Convert idPeople string to ObjectId
     const formData: FormPeople = {
@@ -36,13 +40,6 @@ export async function POST(
       idPeople: new ObjectId(id),
     };
 
-    const checkExisting = await PeopleFormModel.findbyIdPeople(body.idPeople);
-    if (checkExisting) {
-      return Response.json(
-        { message: "Person form already exists" },
-        { status: 409 }
-      );
-    }
     const newPersonForm = await PeopleFormModel.create(formData);
     return Response.json(newPersonForm, { status: 201 });
   } catch (error) {
@@ -52,13 +49,21 @@ export async function POST(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
+
+    // Ensure idPeople is ObjectId, not string
+    const updateData: Partial<FormPeople> = {
+      ...body,
+      idPeople: new ObjectId(id),
+    };
+
     const updatedPersonForm = await PeopleFormModel.updateByIdPeople(
-      params.id,
-      body as Partial<FormPeople>
+      id,
+      updateData
     );
     return Response.json(updatedPersonForm, { status: 200 });
   } catch (error) {
@@ -67,7 +72,7 @@ export async function PUT(
 }
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;

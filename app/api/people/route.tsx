@@ -20,22 +20,3 @@ export async function POST(request: Request) {
     return errHandler(error);
   }
 }
-
-export async function PUT(request: Request) {
-  try {
-    const body = await request.json();
-    if (!body._id) {
-      return Response.json(
-        { message: "ID is required for updating a person" },
-        { status: 400 }
-      );
-    }
-    const updatedPeople = await PeopleModel.updateById(
-      body._id,
-      body as Partial<People>
-    );
-    return Response.json(updatedPeople, { status: 200 });
-  } catch (error) {
-    return errHandler(error);
-  }
-}

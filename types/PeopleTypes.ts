@@ -50,7 +50,7 @@ export type info6Type = {
 
 export type FormPeople = {
   _id?: ObjectId;
-  idPeople: string;
+  idPeople: string | ObjectId;
   totalScore: number;
   categoryPeople: string;
   info1: info1Type;

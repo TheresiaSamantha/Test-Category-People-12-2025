@@ -203,7 +203,8 @@ export default function PeopleFormPage() {
     setLoading(true);
 
     try {
-      const checkExisting = await fetch(`/api/people/${id}`);
+      const checkExisting = await (await fetch(`/api/people/${id}`)).json();
+      console.log("🚀 ~ handleSubmit ~ checkExisting:", checkExisting);
       if (checkExisting) {
         throw new Error("Form scoring untuk orang ini sudah ada.");
       }
@@ -250,7 +251,7 @@ export default function PeopleFormPage() {
         confirmButtonText: "OK",
       });
       if (successSwal.isConfirmed) {
-        router.push("/peopleForm");
+        router.push("/");
       }
     } catch (err) {
       const errorMessage =
